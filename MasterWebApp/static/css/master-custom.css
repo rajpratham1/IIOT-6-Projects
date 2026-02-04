@@ -19,8 +19,9 @@ body {
     background: linear-gradient(135deg, var(--navy-800) 0%, var(--navy-700) 100%);
 }
 
+/* make hero paragraph clear and readable */
 .gradient-bg .lead, .gradient-bg p {
-    color: var(--muted);
+    color: rgba(255,255,255,0.92);
 }
 
 /* Logo styling */
@@ -32,15 +33,15 @@ body {
     margin-right: 0.75rem;
 }
 
-/* Cards */
+/* Cards: darker, semi-opaque panels so light text is readable */
 .website-card {
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border: 1px solid rgba(255,255,255,0.04);
+    background: linear-gradient(180deg, rgba(2,8,23,0.36), rgba(2,8,23,0.24));
+    border: 1px solid rgba(255,255,255,0.06);
     color: #e9f0fb;
 }
-.website-card .card-title{ color:#f1f8ff; }
-.website-card .card-text{ color:var(--muted); }
-.website-card:hover{ transform: translateY(-8px); box-shadow: 0 18px 40px rgba(2,8,23,0.6); }
+.website-card .card-title{ color:#ffffff !important; }
+.website-card .card-text{ color: rgba(255,255,255,0.88) !important; }
+.website-card:hover{ transform: translateY(-8px); box-shadow: 0 22px 48px rgba(2,8,23,0.72); }
 
 /* Buttons */
 .btn-source {
