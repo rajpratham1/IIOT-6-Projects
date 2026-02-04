@@ -1,8 +1,18 @@
 
 
 
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
 app = Flask(__name__)
+
+# Safe URL helper: use in templates as `safe_url('endpoint')` to avoid BuildError when endpoint missing.
+def safe_url(endpoint, **values):
+    try:
+        return url_for(endpoint, **values)
+    except Exception:
+        return '#'
+
+# Register helper in Jinja globals so templates can call `safe_url`.
+app.jinja_env.globals.update(safe_url=safe_url)
 
 @app.route('/')
 def home():
