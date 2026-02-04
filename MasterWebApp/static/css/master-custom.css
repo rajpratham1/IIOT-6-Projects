@@ -8,6 +8,32 @@
     --card-bg: rgba(255,255,255,0.03);
 }
 
+/* Light theme overrides */
+body[data-theme="light"], :root[data-theme="light"] {
+    --navy-900: #f6fbff;
+    --navy-800: #e9f4ff;
+    --navy-700: #dfeffb;
+    --accent: #0b5ed7;
+    --muted: #6c757d;
+    --card-bg: #ffffff;
+}
+
+/* Ensure gradient header switches for light theme */
+body[data-theme="light"] .gradient-bg {
+    background: linear-gradient(135deg, var(--navy-800) 0%, var(--navy-700) 100%);
+    color: #0b2540;
+}
+body[data-theme="light"] .gradient-bg .lead, body[data-theme="light"] .gradient-bg p{ color: rgba(11,37,64,0.9); }
+
+/* Toggle button */
+.gradient-bg{ position: relative; }
+.btn-toggle{ background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.06); color: #fff; }
+.btn-toggle i{ width:18px; height:18px; display:inline-block; }
+
+@media (max-width: 576px){
+    .btn-toggle{ padding:6px 8px; font-size:13px; }
+}
+
 body {
     background: linear-gradient(180deg, var(--navy-900) 0%, #041f3e 100%);
     color: #e9f0fb;
