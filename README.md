@@ -396,7 +396,8 @@ For questions, issues, or contributions:
 
 ## License
 
-This project is intended for academic and educational purposes. For other uses, please contact the repository maintainers @Arya182-ui
+This project is intended for academic and educational purposes. For other uses, please contact the repository maintainers @rajpratham1
+
 
 ---
 #
