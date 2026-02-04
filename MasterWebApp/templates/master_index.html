@@ -14,14 +14,14 @@
         /* small inline overrides - main theme lives in /static/css/master-custom.css */
         body {
             background: transparent; /* use stylesheet gradient */
-            color: #e9f0fb;
+            color: var(--text);
         }
         .website-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border-radius: 15px;
             overflow: hidden;
             background-color: var(--card-bg);
-            border: 1px solid rgba(255,255,255,0.04);
+            border: 1px solid var(--card-border);
         }
         .website-card:hover {
             transform: translateY(-8px);
@@ -29,15 +29,15 @@
         }
         .card-link { text-decoration: none; color: inherit; }
         /* gradient-bg styling moved to master-custom.css to avoid duplication */
-        .category-title { color: #063a78; font-weight:800; margin-bottom:1.25rem; }
-        .website-icon { font-size: 3rem; margin-bottom: 1rem; color: #9fc7ff; }
+        .category-title { color: var(--accent); font-weight:800; margin-bottom:1.25rem; }
+        .website-icon { font-size: 3rem; margin-bottom: 1rem; color: var(--accent); }
         .btn-group-custom { gap: 0.5rem; }
         .card-title { font-weight: 600; margin-bottom: 1rem; }
         .card-text { color: var(--muted); margin-bottom: 1rem; }
         .animate__animated.animate__delay-1s { --animate-delay: 0.5s; }
-    </style>
+    </style> 
 </head>
-<body data-theme="dark">
+<body>
     <!-- Header -->
     <div class="gradient-bg text-white py-5">
         <div class="container">
@@ -539,32 +539,46 @@
         document.addEventListener("DOMContentLoaded", function() {
             // --- Theme handling ---
             const THEME_KEY = 'iiot6-theme';
-            const body = document.body;
+            const root = document.documentElement;
             const toggle = document.getElementById('theme-toggle');
 
-            function applyTheme(theme){
-                body.setAttribute('data-theme', theme);
+            function applyTheme(theme, save = false){
+                // add small transition helper to avoid flicker
+                root.classList.add('theme-transition');
+                root.setAttribute('data-theme', theme);
+                if (save) try{ localStorage.setItem(THEME_KEY, theme); }catch(e){}
+                // update toggle UI
                 if (toggle){
                     toggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
                     toggle.innerHTML = theme === 'dark' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
                 }
+                // remove transition helper after it completes
+                window.setTimeout(()=> root.classList.remove('theme-transition'), 350);
             }
 
             function loadTheme(){
-                try{ return localStorage.getItem(THEME_KEY) || 'dark'; } catch(e){ return 'dark'; }
+                try{
+                    const stored = localStorage.getItem(THEME_KEY);
+                    if (stored) return stored;
+                }catch(e){}
+                const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                return prefersDark ? 'dark' : 'light';
             }
 
-            function saveTheme(theme){ try{ localStorage.setItem(THEME_KEY, theme); }catch(e){} }
-
-            // initialize
-            applyTheme(loadTheme());
+            // initialize (do not save yet)
+            applyTheme(loadTheme(), false);
 
             if (toggle){
                 toggle.addEventListener('click', () => {
-                    const newTheme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                    applyTheme(newTheme);
-                    saveTheme(newTheme);
+                    const current = root.getAttribute('data-theme');
+                    const newTheme = current === 'dark' ? 'light' : 'dark';
+                    applyTheme(newTheme, true);
                 });
+            }
+
+            // Respect reduced-motion
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                root.classList.remove('theme-transition');
             }
 
             // --- Animations & micro-interactions ---
