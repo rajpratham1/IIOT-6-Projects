@@ -531,18 +531,38 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            const elements = Array.from(document.querySelectorAll('.animate__animated'));
             const animationObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        // Use a more subtle animation like 'animate__fadeInUp'
-                        entry.target.classList.add('animate__fadeInUp');
-                        observer.unobserve(entry.target);
+                        const el = entry.target;
+                        // staggered delay from index (fallback 0.06s per item)
+                        const idx = elements.indexOf(el);
+                        const delay = (idx >= 0 ? idx * 0.06 : 0) + 0.06;
+                        el.style.setProperty('--animate-delay', delay + 's');
+
+                        // pick animation type when not already set
+                        if (!el.classList.contains('animate__fadeInUp') && !el.classList.contains('animate__zoomIn') && !el.classList.contains('animate__fadeInLeft')){
+                            // Some elements (stats) look good with zoom, cards with fadeInUp
+                            if (el.classList.contains('text-center')) {
+                                el.classList.add('animate__zoomIn');
+                            } else {
+                                el.classList.add('animate__fadeInUp');
+                            }
+                        }
+                        // add visible flag and stop observing
+                        el.classList.add('is-visible');
+                        observer.unobserve(el);
                     }
                 });
-            }, { threshold: 0.1 }); // Trigger when 10% of the element is visible
+            }, { threshold: 0.12 }); // small portion visible
 
-            document.querySelectorAll('.animate__animated').forEach(el => {
-                animationObserver.observe(el);
+            elements.forEach(el => animationObserver.observe(el));
+
+            // small hover micro-interactions
+            document.querySelectorAll('.website-card').forEach(card => {
+                card.addEventListener('mouseenter', () => card.classList.add('lift'));
+                card.addEventListener('mouseleave', () => card.classList.remove('lift'));
             });
         });
     </script>
