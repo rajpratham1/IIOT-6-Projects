@@ -1,6 +1,16 @@
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory, url_for
 
 app = Flask(__name__)
+
+# Safe Jinja helper: templates can use `safe_url('endpoint')` to avoid BuildError when an endpoint is missing.
+def safe_url(endpoint, **values):
+    try:
+        return url_for(endpoint, **values)
+    except Exception:
+        return '#'
+
+# Register helper in Jinja globals
+app.jinja_env.globals.update(safe_url=safe_url)
 
 # Main landing page to show all websites
 @app.route('/')
@@ -20,6 +30,11 @@ def blog_home():
 @app.route('/blog/about')
 @app.route('/blog/about.html')
 def blog_about():
+    return render_template('blog/about.html')
+
+# Fallback top-level /about (some templates call url_for('about') — provide a friendly fallback)
+@app.route('/about')
+def about():
     return render_template('blog/about.html')
 
 @app.route('/blog/blog')
